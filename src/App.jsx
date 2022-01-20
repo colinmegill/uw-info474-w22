@@ -2,6 +2,7 @@ import { scaleLinear, scaleBand, extent, line, symbol, csv } from "d3";
 import { AxisLeft, AxisBottom } from "@visx/axis";
 import { uniq } from "lodash";
 import sunshine from "./sunshine";
+import census from "./census";
 
 function App() {
   const chartSize = 500;
@@ -47,12 +48,7 @@ function App() {
       return _scaleY(d);
     });
 
-  csv(
-    "https://gist.githubusercontent.com/colinmegill/6c405856837dea7f978f337ef864d50e/raw/c0b158814885814c6b1a2cb36202b6577c9ad95d/census.csv",
-    (data) => {
-      console.log(data);
-    }
-  );
+  console.log(census);
 
   return (
     <div style={{ margin: 20 }}>
