@@ -1,5 +1,6 @@
 import { scaleLinear, scaleBand, extent, line, symbol, csv } from "d3";
 import { AxisLeft, AxisBottom } from "@visx/axis";
+import { BoxPlot } from "@visx/stats";
 import { uniq } from "lodash";
 import sunshine from "./sunshine";
 import census from "./census";
@@ -68,10 +69,22 @@ function App() {
     .domain([minFare, maxFare])
     .range([titanicMargin, titanicChartWidth - titanicMargin - titanicMargin]);
 
+  /* working with bins to generate a histogram */
+  /* first, instantiate a parameterized generator (exciting) */
+  const tBinGenerator = d3.bin().value((d) => d.Fare);
+
+  const titanicBins = tBinGenerator(titanic);
+  const titanicBarHeightScale = scaleLinear()
+    .domain([0, d3.max(titanicBins, (d) => d.length)])
+    .range([
+      titanicChartHeight - titanicMargin - titanicAxisTextPadding,
+      titanicMargin,
+    ]);
+
   return (
     <div style={{ margin: 20 }}>
       {/* titanic eda */}
-      <div style={{ marginBottom: 200 }}>
+      <div>
         <h1>Titanic dataset EDA</h1>
         <p>
           The Titanic dataset contains {titanic.length} entries, each entry
@@ -80,9 +93,10 @@ function App() {
         <p>
           Each passenger paid a fare for their ticket. The lowest fare paid
           listed in this dataset was ${minFare}. The highest fare paid was $
-          {maxFare}.
+          {maxFare}. Here are some examples of methods of visualizing univariate
+          distributions during eda:
         </p>
-        {/* strip plot */}
+        <p>Here we show a strip plot of the fares:</p>
         <svg
           height={titanicChartHeight}
           width={titanicChartWidth}
@@ -106,7 +120,7 @@ function App() {
             numTicks={7}
           />
         </svg>
-        {/* jittered strip plot */}
+        <p>Here we show a jittered strip plot of the fares:</p>
         <svg
           height={titanicChartHeight}
           width={titanicChartWidth}
@@ -132,7 +146,7 @@ function App() {
             numTicks={7}
           />
         </svg>
-        {/* bar code plot */}
+        <p>Here we show a barcode plot of the fares:</p>
         <svg
           height={titanicChartHeight}
           width={titanicChartWidth}
@@ -148,6 +162,51 @@ function App() {
                 y2={titanicChartHeight / 2}
                 style={{ stroke: "rgba(70,130,180,.1)", fill: "none" }}
               />
+            );
+          })}
+          <AxisBottom
+            strokeWidth={1}
+            top={titanicChartHeight - titanicMargin - titanicAxisTextPadding}
+            scale={titanicFareScale}
+            numTicks={7}
+          />
+        </svg>
+      </div>
+      <p>Here we show a histogram of the fares.</p>
+      <div>
+        <svg width={titanicChartWidth} height={titanicChartHeight}>
+          {titanicBins.map((bin, i) => {
+            return (
+              <rect
+                key={i}
+                fill="steelblue"
+                x={titanicFareScale(bin.x0) + 1}
+                y={titanicBarHeightScale(bin.length)}
+                width={Math.max(
+                  0,
+                  titanicFareScale(bin.x1) - titanicFareScale(bin.x0) - 1
+                )}
+                height={
+                  titanicBarHeightScale(0) - titanicBarHeightScale(bin.length)
+                }
+              />
+            );
+          })}
+          {titanicBins.map((bin, i) => {
+            return (
+              <text
+                key={i}
+                fill="black"
+                fontSize="10"
+                textAnchor="middle"
+                x={
+                  ((titanicFareScale(bin.x0) + titanicFareScale(bin.x1)) / 2) |
+                  0
+                }
+                y={titanicBarHeightScale(bin.length) - 2}
+              >
+                {bin.length}
+              </text>
             );
           })}
           <AxisBottom
@@ -236,6 +295,7 @@ function App() {
                   ${rectWidth / 2 + 30 + i * 120}, 
                   ${200}
                 )`}
+                key={i}
                 x={30 + i * 120}
                 y={200}
                 width={rectWidth}
@@ -247,6 +307,7 @@ function App() {
           {[5, 20, 30, 50].map((num, i) => {
             return (
               <line
+                key={i}
                 x1={100}
                 y1={320 + i * 15}
                 x2={120 + num * 5}
@@ -258,7 +319,7 @@ function App() {
           })}
           {[5, 20, 30, 50].map((num, i) => {
             return (
-              <text x={90} y={325 + i * 15} textAnchor="end">
+              <text key={i} x={90} y={325 + i * 15} textAnchor="end">
                 {num}
               </text>
             );

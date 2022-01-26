@@ -9,6 +9,7 @@
   "dependencies": {
     "@visx/axis": "^2.4.0",
     "@visx/shape": "^2.4.0",
+    "@visx/stats": "^2.2.2",
     "d3": "^7.3.0",
     "danfojs": "^1.0.2",
     "lodash": "^4.17.21",
