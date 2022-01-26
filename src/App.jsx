@@ -3,6 +3,7 @@ import { AxisLeft, AxisBottom } from "@visx/axis";
 import { uniq } from "lodash";
 import sunshine from "./sunshine";
 import census from "./census";
+import titanic from "./titanic";
 
 function App() {
   const chartSize = 500;
@@ -48,7 +49,7 @@ function App() {
       return _scaleY(d);
     });
 
-  console.log(census);
+  console.log(titanic);
 
   return (
     <div style={{ margin: 20 }}>
@@ -78,7 +79,8 @@ function App() {
               <path
                 stroke={city === "Seattle" ? "red" : "black"}
                 strokeWidth={city === "Seattle" ? 4 : 1}
-                fill="none"
+                // fill={"rgba(255,0,0,.3)"}
+                fill={"none"}
                 key={city}
                 d={_lineMaker(dataByCity[city])}
               />
