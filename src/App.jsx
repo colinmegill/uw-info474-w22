@@ -4,6 +4,8 @@ import { uniq } from "lodash";
 import sunshine from "./sunshine";
 import census from "./census";
 import titanic from "./titanic";
+import * as d3 from "d3";
+import { forEach } from "lodash";
 
 function App() {
   const chartSize = 500;
@@ -49,15 +51,120 @@ function App() {
       return _scaleY(d);
     });
 
-  console.log(titanic);
+  var minFare = d3.min(titanic, (passenger) => {
+    return passenger.Fare;
+  });
+
+  var maxFare = d3.max(titanic, (passenger) => {
+    return passenger.Fare;
+  });
+
+  const titanicChartWidth = 400;
+  const titanicChartHeight = 100;
+  const titanicMargin = 20;
+  const titanicAxisTextPadding = 5;
+
+  const titanicFareScale = scaleLinear()
+    .domain([minFare, maxFare])
+    .range([titanicMargin, titanicChartWidth - titanicMargin - titanicMargin]);
 
   return (
     <div style={{ margin: 20 }}>
+      {/* titanic eda */}
+      <div style={{ marginBottom: 200 }}>
+        <h1>Titanic dataset EDA</h1>
+        <p>
+          The Titanic dataset contains {titanic.length} entries, each entry
+          represents a passenger.
+        </p>
+        <p>
+          Each passenger paid a fare for their ticket. The lowest fare paid
+          listed in this dataset was ${minFare}. The highest fare paid was $
+          {maxFare}.
+        </p>
+        {/* strip plot */}
+        <svg
+          height={titanicChartHeight}
+          width={titanicChartWidth}
+          // style={{ border: "1px solid black" }}
+        >
+          {titanic.map((passenger, i) => {
+            return (
+              <circle
+                key={i}
+                cx={titanicFareScale(passenger.Fare)}
+                cy={titanicChartHeight / 2}
+                r={5}
+                style={{ stroke: "rgba(50,50,50,.1)", fill: "none" }}
+              />
+            );
+          })}
+          <AxisBottom
+            strokeWidth={1}
+            top={titanicChartHeight - titanicMargin - titanicAxisTextPadding}
+            scale={titanicFareScale}
+            numTicks={7}
+          />
+        </svg>
+        {/* jittered strip plot */}
+        <svg
+          height={titanicChartHeight}
+          width={titanicChartWidth}
+          // style={{ border: "1px solid black" }}
+        >
+          <g transform={`translate(0,${titanicMargin})`}>
+            {titanic.map((passenger, i) => {
+              return (
+                <circle
+                  key={i}
+                  cx={titanicFareScale(passenger.Fare)}
+                  cy={(Math.random() * titanicChartHeight) / 2}
+                  r={3}
+                  style={{ stroke: "rgba(70,130,180,.5)", fill: "none" }}
+                />
+              );
+            })}
+          </g>
+          <AxisBottom
+            strokeWidth={1}
+            top={titanicChartHeight - titanicMargin - titanicAxisTextPadding}
+            scale={titanicFareScale}
+            numTicks={7}
+          />
+        </svg>
+        {/* bar code plot */}
+        <svg
+          height={titanicChartHeight}
+          width={titanicChartWidth}
+          // style={{ border: "1px solid black" }}
+        >
+          {titanic.map((passenger, i) => {
+            return (
+              <line
+                key={i}
+                x1={titanicFareScale(passenger.Fare)}
+                y1={titanicMargin}
+                x2={titanicFareScale(passenger.Fare)}
+                y2={titanicChartHeight / 2}
+                style={{ stroke: "rgba(70,130,180,.1)", fill: "none" }}
+              />
+            );
+          })}
+          <AxisBottom
+            strokeWidth={1}
+            top={titanicChartHeight - titanicMargin - titanicAxisTextPadding}
+            scale={titanicFareScale}
+            numTicks={7}
+          />
+        </svg>
+      </div>
+
       <h1>Sunshine in US cities</h1>
       <div style={{ display: "flex" }}>
         <svg
           width={chartSize + legendPadding}
           height={chartSize}
+          key={"a"}
           // style={{ border: "1px solid pink" }}
         >
           <AxisLeft strokeWidth={0} left={margin} scale={_scaleY} />
@@ -106,11 +213,13 @@ function App() {
         <svg
           width={chartSize}
           height={chartSize}
+          key={"b"}
           style={{ border: "2px solid black" }}
         >
           {[5, 20, 30, 50].map((num, i) => {
             return (
               <circle
+                key={num}
                 cx={50 + i * 120}
                 cy={60}
                 r={num}
