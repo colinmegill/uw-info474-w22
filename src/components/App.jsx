@@ -5,7 +5,6 @@ import { uniq } from "lodash";
 import sunshine from "../data/sunshine";
 import census from "../data/census";
 import titanic from "../data/titanic";
-import atlantic from "../data/atlantic";
 import * as d3 from "d3";
 import { forEach } from "lodash";
 
@@ -84,27 +83,6 @@ function App() {
       titanicChartHeight - titanicMargin - titanicAxisTextPadding,
       titanicMargin,
     ]);
-
-  const atlanticLocations = {};
-
-  atlantic.forEach((voyage) => {
-    if (
-      !atlanticLocations[
-        voyage["Voyage itinerary imputed port where began (ptdepimp) place"]
-      ]
-    ) {
-      atlanticLocations[
-        voyage["Voyage itinerary imputed port where began (ptdepimp) place"]
-      ] = null;
-
-      /* 
-        Voyage itinerary first place of slave purchase (plac1tra): "Whydah"
-        Voyage itinerary imputed port where began (ptdepimp) place: "Texel"
-        Voyage itinerary imputed principal place of slave purchase (mjbyptimp): "Whydah"
-        Voyage itinerary imputed principal port of slave disembarkation (mjslptimp) place: "Curacao"
-      */
-    }
-  });
 
   return (
     <div style={{ margin: 20 }}>
