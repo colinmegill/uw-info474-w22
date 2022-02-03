@@ -2,7 +2,7 @@
 
 import * as topojson from "topojson-client";
 import worldTopo from "../data/world-topo";
-import { geoMercator, geoPath } from "d3-geo";
+import { geoNaturalEarth1, geoPath } from "d3-geo";
 
 import airports from "../data/airports";
 
@@ -10,7 +10,10 @@ const _worldTopo = topojson.feature(worldTopo, worldTopo.objects.units);
 const countryShapes = _worldTopo.features;
 
 const MapsExample = ({ width = 960, height = 500 }) => {
-  const projection = geoMercator().center([0, 5]).scale(150).rotate([0, 0]);
+  const projection = geoNaturalEarth1()
+    .center([0, 5])
+    .scale(150)
+    .rotate([0, 0]);
   const path = geoPath().projection(projection);
 
   console.log(airports);
@@ -34,7 +37,6 @@ const MapsExample = ({ width = 960, height = 500 }) => {
         </g>
         <g>
           {airports.map((airport, i) => {
-            console.log(path(10));
             return (
               <circle
                 key={i}
@@ -42,6 +44,7 @@ const MapsExample = ({ width = 960, height = 500 }) => {
                   airport.Longitude,
                   airport.Latitude,
                 ])})`}
+                fill={`rgba(70, 130, 180, .7)`}
                 r={1.5}
               />
             );
