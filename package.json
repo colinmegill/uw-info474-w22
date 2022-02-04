@@ -9,6 +9,7 @@
   "dependencies": {
     "@visx/axis": "^2.4.0",
     "@visx/geo": "^2.1.2",
+    "@visx/legend": "^2.2.2",
     "@visx/scale": "^2.2.2",
     "@visx/shape": "^2.4.0",
     "@visx/stats": "^2.2.2",

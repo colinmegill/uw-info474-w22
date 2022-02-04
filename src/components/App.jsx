@@ -8,6 +8,10 @@ import titanic from "../data/titanic";
 import * as d3 from "d3";
 import { forEach } from "lodash";
 
+import Legends from "./legendThreshold";
+
+import { interpolateGreys } from "d3";
+
 import MapsExample from "./mapsExampleBasemap";
 import MapsExampleAirports from "./mapsExampleAirports";
 
@@ -85,9 +89,10 @@ function App() {
     ]);
 
   return (
-    <div style={{ margin: 20 }}>
+    <div style={{ margin: 20, fontFamily: "Gill Sans" }}>
       {/* titanic eda */}
       <div>
+        <Legends />
         <MapsExampleAirports />
         <MapsExample />
         <h1>Titanic dataset EDA</h1>

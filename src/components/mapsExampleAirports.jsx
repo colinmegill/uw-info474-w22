@@ -16,7 +16,7 @@ const MapsExample = ({ width = 960, height = 500 }) => {
     .rotate([0, 0]);
   const path = geoPath().projection(projection);
 
-  console.log(airports);
+  console.log("countryshapes", countryShapes);
 
   return (
     <div>
