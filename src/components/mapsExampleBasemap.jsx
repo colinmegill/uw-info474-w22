@@ -20,8 +20,11 @@ const MapsExample = ({ width = 960, height = 500 }) => {
             return (
               <path
                 key={i}
+                onClick={() => {
+                  console.log(shape);
+                }}
                 d={path(shape)}
-                fill="lightgrey"
+                fill={"#" + ((Math.random() * 0xffffff) << 0).toString(16)}
                 stroke="white"
                 strokeWidth={0.3}
               />

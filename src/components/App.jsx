@@ -1,7 +1,9 @@
+import React, { useState } from "react"; /* ADD THIS LINE FOR STATE MANAGMENT */
+
 import { scaleLinear, scaleBand, extent, line, symbol, csv } from "d3";
 import { AxisLeft, AxisBottom } from "@visx/axis";
 import { BoxPlot } from "@visx/stats";
-import { uniq } from "lodash";
+import { forOwn, uniq } from "lodash";
 import sunshine from "../data/sunshine";
 import census from "../data/census";
 import titanic from "../data/titanic";
@@ -16,6 +18,15 @@ import MapsExample from "./mapsExampleBasemap";
 import MapsExampleAirports from "./mapsExampleAirports";
 
 function App() {
+  const [selectedCities, setSelectedCities] = useState([
+    "New York",
+    "Chicago",
+    "Houston",
+    "Miami",
+    "San Francisco",
+    "Seattle",
+  ]); /* ADD THIS LINE FOR STATE MANAGMENT */
+
   const chartSize = 500;
   const margin = 30;
   const legendPadding = 200;
@@ -229,6 +240,37 @@ function App() {
       </div>
 
       <h1>Sunshine in US cities</h1>
+      {/* <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 11)}>Click me</button> */}
+      <div>
+        {cities.map((city, i) => {
+          return (
+            <>
+              <input
+                type="checkbox"
+                id={city}
+                name={city}
+                checked={selectedCities.indexOf(city) > -1}
+                onChange={() => {
+                  if (selectedCities.indexOf(city) === -1) {
+                    setSelectedCities(selectedCities.slice(0).push(city));
+                  } else {
+                    setSelectedCities(
+                      selectedCities.slice(0).filter((_city) => {
+                        return _city !== city;
+                      })
+                    );
+                  }
+                }}
+              />
+              <label style={{ marginRight: 15 }} for={city}>
+                {city}
+              </label>
+            </>
+          );
+        })}
+      </div>
+
       <div style={{ display: "flex" }}>
         <svg
           width={chartSize + legendPadding}
@@ -236,6 +278,7 @@ function App() {
           key={"a"}
           // style={{ border: "1px solid pink" }}
         >
+          {/* <circle cx={100} cy={50} r={count} /> */}
           <AxisLeft strokeWidth={0} left={margin} scale={_scaleY} />
           <AxisBottom
             strokeWidth={0}
@@ -253,7 +296,11 @@ function App() {
           {cities.map((city, i) => {
             return (
               <path
-                stroke={city === "Seattle" ? "red" : "black"}
+                stroke={
+                  selectedCities.indexOf(city) === -1
+                    ? "rgba(0,0,0,.2)"
+                    : "rgba(0,0,0,1)"
+                }
                 strokeWidth={city === "Seattle" ? 4 : 1}
                 // fill={"rgba(255,0,0,.3)"}
                 fill={"none"}
