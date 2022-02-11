@@ -10,6 +10,8 @@ import titanic from "../data/titanic";
 import * as d3 from "d3";
 import { forEach } from "lodash";
 
+import Pie from "./pie";
+
 import Legends from "./legendThreshold";
 
 import { interpolateGreys } from "d3";
@@ -103,6 +105,7 @@ function App() {
     <div style={{ margin: 20, fontFamily: "Gill Sans" }}>
       {/* titanic eda */}
       <div>
+        <Pie />
         <Legends />
         <MapsExampleAirports />
         <MapsExample />
@@ -247,6 +250,7 @@ function App() {
           return (
             <>
               <input
+                key={i}
                 type="checkbox"
                 id={city}
                 name={city}
@@ -263,9 +267,7 @@ function App() {
                   }
                 }}
               />
-              <label style={{ marginRight: 15 }} for={city}>
-                {city}
-              </label>
+              <label style={{ marginRight: 15 }}>{city}</label>
             </>
           );
         })}
